@@ -1,76 +1,96 @@
 package com.letterofcredit.entity;
 
+//Entity class representing the Letter of Credit (LC)
+
+
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.util.Date;
 
-@Entity 
+@Entity
 public class LetterOfCredit {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
-    private Long id;
+ @Id
+ @GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto-generate the ID
+ private Long id;
 
-    private String applicant;   // Buyer (Applicant in the LC)
-    private String beneficiary; // Seller (Beneficiary in the LC)
-    private Double amount;      // The amount of the LC
-    private String currency;    // Currency of the LC
-    private Date issueDate;     // Date the LC was issued
-    private String status;      // Status of the LC (e.g., pending, approved, etc.)
+ @ManyToOne  // Many Letters of Credit can belong to one Applicant
+ @JoinColumn(name = "applicant_id")  // Foreign key reference to Applicant
+ private Applicant applicant;
 
-    // Getters and setters for each field
-    public Long getId() {
-        return id;
-    }
+ @ManyToOne  // Many Letters of Credit can belong to one Beneficiary
+ @JoinColumn(name = "beneficiary_id")  // Foreign key reference to Beneficiary
+ private Beneficiary beneficiary;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+ @ManyToOne  // Many Letters of Credit can involve one Product
+ @JoinColumn(name = "product_id")  // Foreign key reference to Product
+ private Product product;
 
-    public String getApplicant() {
-        return applicant;
-    }
+ @Temporal(TemporalType.DATE)  // Specify the date format for issue date
+ private Date issueDate;
 
-    public void setApplicant(String applicant) {
-        this.applicant = applicant;
-    }
+ @Temporal(TemporalType.DATE)  // Specify the date format for due date
+ private Date dueDate;
 
-    public String getBeneficiary() {
-        return beneficiary;
-    }
+ @NotBlank(message = "Status is mandatory")  // Validation: Status cannot be blank
+ private String status;
 
-    public void setBeneficiary(String beneficiary) {
-        this.beneficiary = beneficiary;
-    }
+public Long getId() {
+	return id;
+}
 
-    public Double getAmount() {
-        return amount;
-    }
+public void setId(Long id) {
+	this.id = id;
+}
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
+public Applicant getApplicant() {
+	return applicant;
+}
 
-    public String getCurrency() {
-        return currency;
-    }
+public void setApplicant(Applicant applicant) {
+	this.applicant = applicant;
+}
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
+public Beneficiary getBeneficiary() {
+	return beneficiary;
+}
 
-    public Date getIssueDate() {
-        return issueDate;
-    }
+public void setBeneficiary(Beneficiary beneficiary) {
+	this.beneficiary = beneficiary;
+}
 
-    public void setIssueDate(Date issueDate) {
-        this.issueDate = issueDate;
-    }
+public Product getProduct() {
+	return product;
+}
 
-    public String getStatus() {
-        return status;
-    }
+public void setProduct(Product product) {
+	this.product = product;
+}
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+public Date getIssueDate() {
+	return issueDate;
+}
+
+public void setIssueDate(Date issueDate) {
+	this.issueDate = issueDate;
+}
+
+public Date getDueDate() {
+	return dueDate;
+}
+
+public void setDueDate(Date dueDate) {
+	this.dueDate = dueDate;
+}
+
+public String getStatus() {
+	return status;
+}
+
+public void setStatus(String status) {
+	this.status = status;
+}
+
+
+ 
 }

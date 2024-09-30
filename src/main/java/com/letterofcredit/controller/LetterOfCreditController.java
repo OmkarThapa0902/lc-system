@@ -1,5 +1,6 @@
 package com.letterofcredit.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,45 +9,50 @@ import com.letterofcredit.entity.LetterOfCredit;
 import com.letterofcredit.service.LetterOfCreditService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/lcs")
-@CrossOrigin("*") // Allows frontend calls from any origin
+@RequestMapping("/api/lettersOfCredit")
 public class LetterOfCreditController {
 
     @Autowired
-    private LetterOfCreditService service; // Injects the service layer to handle business logic
+    private LetterOfCreditService letterOfCreditService;
 
-    // GET endpoint to retrieve all letters of credit
+    // Get all Letters of Credit
     @GetMapping
-    public List<LetterOfCredit> getAllLCs() {
-        // Calls service to fetch all letters of credit from the database
-        return service.getAllLCs();
+    public List<LetterOfCredit> getAllLettersOfCredit() {
+        return letterOfCreditService.getAllLettersOfCredit();
     }
 
-    // GET endpoint to retrieve a specific letter of credit by ID
+    // Get a specific Letter of Credit by ID
     @GetMapping("/{id}")
-    public ResponseEntity<LetterOfCredit> getLCById(@PathVariable Long id) {
-        // Calls service to fetch a letter of credit by its ID
-        Optional<LetterOfCredit> lc = service.getLCById(id);
-        // Returns the found LC with a 200 status, or 404 if not found
-        return lc.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<LetterOfCredit> getLetterOfCreditById(@PathVariable Long id) {
+        return letterOfCreditService.getLetterOfCreditById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // POST endpoint to create a new letter of credit
+    // Create a new Letter of Credit
     @PostMapping
-    public LetterOfCredit createLC(@RequestBody LetterOfCredit lc) {
-        // Calls service to save the new letter of credit in the database
-        return service.createLC(lc);
+    public ResponseEntity<LetterOfCredit> createLetterOfCredit(@RequestBody LetterOfCredit letterOfCredit) {
+        LetterOfCredit createdLC = letterOfCreditService.createLetterOfCredit(letterOfCredit);
+        return ResponseEntity.ok(createdLC);
     }
 
-    // DELETE endpoint to remove a letter of credit by ID
+    // Update an existing Letter of Credit
+    @PutMapping("/{id}")
+    public ResponseEntity<LetterOfCredit> updateLetterOfCredit(@PathVariable Long id, @RequestBody LetterOfCredit letterOfCredit) {
+        try {
+            LetterOfCredit updatedLC = letterOfCreditService.updateLetterOfCredit(id, letterOfCredit);
+            return ResponseEntity.ok(updatedLC);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Delete a Letter of Credit
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLC(@PathVariable Long id) {
-        // Calls service to delete the letter of credit by ID
-        service.deleteLC(id);
-        // Returns 204 No Content on successful deletion
+    public ResponseEntity<Void> deleteLetterOfCredit(@PathVariable Long id) {
+        letterOfCreditService.deleteLetterOfCredit(id);
         return ResponseEntity.noContent().build();
     }
 }
